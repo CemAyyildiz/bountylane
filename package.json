@@ -1,0 +1,15 @@
+{
+  "name": "bountylane",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modular workspace for a task and bounty platform",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace apps/api run dev",
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev": "echo \"Run dev:api and dev:web in separate terminals\"",
+    "build": "npm --workspaces run build"
+  }
+}
