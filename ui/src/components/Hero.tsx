@@ -39,7 +39,7 @@ export function Hero() {
                 VIEW SKILLS DOC
               </a>
               <a 
-                href="https://github.com" 
+                href="https://github.com/CemAyyildiz/bountylane" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="brutal-btn brutal-btn-outline"
