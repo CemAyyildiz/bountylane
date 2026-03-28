@@ -12,7 +12,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: "5G98MBTZA4GYHHKR6F3NYEZSR3D8XVRB93",
+    apiKey: process.env.ETHERSCAN_API_KEY || "",
     customChains: [
       {
         network: "monad",
