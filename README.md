@@ -203,7 +203,7 @@ curl -X POST http://localhost:3001/tasks/{id}/submit \
    ```bash
    cd ui && npm run build
    ```
-  Set `VITE_API_URL` to your platform URL and `VITE_PLATFORM_API_KEY` to your write API key
+  Set `VITE_API_URL` to your platform URL, `VITE_AGENT_URL` to your agent URL, `VITE_CONTRACT_ADDRESS` to your deployed contract, and `VITE_PLATFORM_API_KEY` to your write API key
 
 ### Production Checklist
 

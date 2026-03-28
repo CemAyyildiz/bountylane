@@ -1,12 +1,12 @@
 import type { Task } from "./types";
 
 const isProduction = import.meta.env.PROD;
-const API = isProduction ? "/proxy/api" : "http://localhost:3001";
-const AGENT_API = isProduction ? "/proxy/agent" : "http://localhost:3002";
+const API = import.meta.env.VITE_API_URL || (isProduction ? "/proxy/api" : "http://localhost:3001");
+const AGENT_API = import.meta.env.VITE_AGENT_URL || (isProduction ? "/proxy/agent" : "http://localhost:3002");
 const PLATFORM_API_KEY = import.meta.env.VITE_PLATFORM_API_KEY;
 
 // Contract address (same as deployed)
-export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS || "0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C";
+export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS || "";
 
 function writeHeaders(): HeadersInit {
   return {
