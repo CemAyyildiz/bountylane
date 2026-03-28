@@ -64,6 +64,12 @@ export function Agent() {
 
   const platformOn = health?.status === "ok";
   const agentOn = !!agent;
+  const skillSet = [
+    { name: "Escrow Ops", confidence: 94 },
+    { name: "Task Routing", confidence: 89 },
+    { name: "LLM Solve", confidence: 86 },
+    { name: "Tx Recovery", confidence: 78 },
+  ];
 
   const fmt = (s: number) => {
     const h = Math.floor(s / 3600);
@@ -116,6 +122,15 @@ export function Agent() {
             <StatRow label="STATUS" value={agentOn ? "● ACTIVE" : "○ STOPPED"} accent={agentOn} />
             <StatRow label="LLM" value="GROQ / LLAMA-3.3-70B" />
             <StatRow label="UPTIME" value={fmt(uptime)} />
+
+            <div className="border-t border-[var(--c-gray-light)] pt-3">
+              <h3 className="text-xs text-dim mb-2">SKILLS</h3>
+              <div className="space-y-2">
+                {skillSet.map((skill) => (
+                  <SkillBar key={skill.name} name={skill.name} confidence={skill.confidence} />
+                ))}
+              </div>
+            </div>
 
             <div className="border-t border-[var(--c-gray-light)] pt-3">
               <h3 className="text-xs text-dim mb-2">CURRENT TASK</h3>
@@ -310,4 +325,21 @@ function Step({ icon, label, sub }: { icon: string; label: string; sub: string }
 
 function Arrow() {
   return <span className="text-accent text-lg font-bold hidden sm:inline">→</span>;
+}
+
+function SkillBar({ name, confidence }: { name: string; confidence: number }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-[10px] mb-1">
+        <span className="text-dim">{name}</span>
+        <span className="text-accent font-bold">{confidence}%</span>
+      </div>
+      <div className="h-1.5 bg-[var(--c-gray)] border border-[var(--c-gray-light)]">
+        <div
+          className="h-full bg-[var(--c-accent)]"
+          style={{ width: `${confidence}%` }}
+        />
+      </div>
+    </div>
+  );
 }

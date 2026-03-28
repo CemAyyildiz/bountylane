@@ -16,6 +16,7 @@ export function Demo() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"ALL" | Task["status"]>("ALL");
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -118,6 +119,9 @@ export function Demo() {
   };
 
   const online = !!health;
+  const visibleTasks = statusFilter === "ALL"
+    ? tasks
+    : tasks.filter((task) => task.status === statusFilter);
 
   return (
     <section id="demo" className="py-20 px-6 border-t-2 border-[var(--c-white)]">
@@ -195,16 +199,33 @@ export function Demo() {
               <div className="terminal-dot bg-[var(--c-accent)]" />
               <div className="terminal-dot bg-[var(--c-success)]" />
               <span className="text-xs text-dim ml-2">tasks.db</span>
-              <span className="text-xs text-dim ml-auto">{tasks.length} records</span>
+              <span className="text-xs text-dim ml-auto">{visibleTasks.length} records</span>
+            </div>
+
+            <div className="px-4 py-2 border-b border-[var(--c-gray-light)] flex items-center justify-between">
+              <span className="text-[10px] text-dim">FILTER</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as "ALL" | Task["status"])}
+                className="bg-[var(--c-black)] border border-[var(--c-gray-light)] text-xs px-2 py-1"
+              >
+                <option value="ALL">ALL</option>
+                <option value="OPEN">OPEN</option>
+                <option value="ACCEPTED">ACCEPTED</option>
+                <option value="SUBMITTED">SUBMITTED</option>
+                <option value="DONE">DONE</option>
+              </select>
             </div>
             
             <div className="h-[400px] overflow-y-auto divide-y divide-[var(--c-gray-light)]">
-              {tasks.length === 0 ? (
+              {visibleTasks.length === 0 ? (
                 <div className="p-8 text-center text-dim text-xs">
-                  NO TASKS — RUN DEMO TO CREATE
+                  {statusFilter === "ALL"
+                    ? "NO TASKS — RUN DEMO TO CREATE"
+                    : `NO ${statusFilter} TASKS`}
                 </div>
               ) : (
-                tasks.map((task) => (
+                visibleTasks.map((task) => (
                   <div key={task.id} className="p-4 hover:bg-[var(--c-gray)] transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-bold">{task.title}</span>
