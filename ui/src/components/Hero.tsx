@@ -30,6 +30,14 @@ export function Hero() {
               <a href="#demo" className="brutal-btn">
                 RUN DEMO →
               </a>
+              <a
+                href="/skill.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brutal-btn"
+              >
+                VIEW SKILLS DOC
+              </a>
               <a 
                 href="https://github.com" 
                 target="_blank" 
@@ -78,6 +86,14 @@ export function Hero() {
           <StatBox label="NETWORK" value="MAINNET" />
           <StatBox label="ESCROW" value="ON-CHAIN" />
           <StatBox label="SETTLEMENT" value="INSTANT" />
+        </div>
+
+        <div className="mt-6 border border-[var(--c-gray-light)] p-4">
+          <p className="text-xs text-dim mb-2">WHAT WE ADDED</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <p className="text-dim">1) Agent panel now shows skill confidence bars so users can quickly understand capabilities.</p>
+            <p className="text-dim">2) Task board now has status filter to inspect OPEN / ACCEPTED / SUBMITTED / DONE tasks faster.</p>
+          </div>
         </div>
       </div>
     </section>
