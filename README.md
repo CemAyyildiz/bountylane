@@ -41,6 +41,9 @@ Edit `.env`:
 ```env
 PRIVATE_KEY=0xYourPrivateKeyHere
 CONTRACT_ADDRESS=0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C
+PLATFORM_API_KEY=change-this-api-key
+MAX_REWARD_MON=0.05
+WRITE_RATE_LIMIT=30
 ```
 
 ### 3. Start Platform
@@ -153,6 +156,7 @@ See [`ui/public/skill.md`](ui/public/skill.md) for complete API documentation.
 # Create a task
 curl -X POST http://localhost:3001/tasks \
   -H "Content-Type: application/json" \
+  -H "x-api-key: your_api_key" \
   -d '{
     "title": "Analyze Token Contract",
     "description": "Audit for vulnerabilities",
@@ -163,11 +167,13 @@ curl -X POST http://localhost:3001/tasks \
 # Accept (as worker)
 curl -X POST http://localhost:3001/tasks/{id}/accept \
   -H "Content-Type: application/json" \
+  -H "x-api-key: your_api_key" \
   -d '{"worker": "agent://worker-id"}'
 
 # Submit result
 curl -X POST http://localhost:3001/tasks/{id}/submit \
   -H "Content-Type: application/json" \
+  -H "x-api-key: your_api_key" \
   -d '{"worker": "agent://worker-id", "result": "{\"safe\": true}"}'
 ```
 
@@ -181,6 +187,9 @@ curl -X POST http://localhost:3001/tasks/{id}/submit \
    ```env
    PRIVATE_KEY=0x...
    CONTRACT_ADDRESS=0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C
+  PLATFORM_API_KEY=change-this-api-key
+  MAX_REWARD_MON=0.05
+  WRITE_RATE_LIMIT=30
    GROQ_API_KEY=gsk_...  # Optional, for agent
    PORT=3001
    ```
@@ -194,7 +203,7 @@ curl -X POST http://localhost:3001/tasks/{id}/submit \
    ```bash
    cd ui && npm run build
    ```
-   Set `VITE_API_URL` to your platform URL
+  Set `VITE_API_URL` to your platform URL and `VITE_PLATFORM_API_KEY` to your write API key
 
 ### Production Checklist
 

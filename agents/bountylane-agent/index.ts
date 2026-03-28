@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import { resolve } from "node:path";
+import rateLimit from "express-rate-limit";
+import { TaskStatus, type Task } from "../../shared/task.js";
 
 // Load .env from project root (skip if env vars already set, e.g. Railway)
 if (!process.env.PRIVATE_KEY) {
@@ -32,6 +34,9 @@ process.on("unhandledRejection", (reason) => {
 const PORT = Number(process.env.PORT ?? 3001);
 const PRIVATE_KEY = process.env.PRIVATE_KEY as Hex;
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS as Hex;
+const PLATFORM_API_KEY = process.env.PLATFORM_API_KEY;
+const MAX_REWARD_MON = Number(process.env.MAX_REWARD_MON ?? 0.05);
+const WRITE_RATE_LIMIT = Number(process.env.WRITE_RATE_LIMIT ?? 30);
 
 if (!PRIVATE_KEY) {
   console.error("❌ PRIVATE_KEY not set in .env");
@@ -40,6 +45,21 @@ if (!PRIVATE_KEY) {
 
 if (!CONTRACT_ADDRESS) {
   console.error("❌ CONTRACT_ADDRESS not set in .env");
+  process.exit(1);
+}
+
+if (!Number.isFinite(MAX_REWARD_MON) || MAX_REWARD_MON <= 0) {
+  console.error("❌ MAX_REWARD_MON must be a positive number");
+  process.exit(1);
+}
+
+if (!Number.isFinite(WRITE_RATE_LIMIT) || WRITE_RATE_LIMIT <= 0) {
+  console.error("❌ WRITE_RATE_LIMIT must be a positive number");
+  process.exit(1);
+}
+
+if (process.env.NODE_ENV === "production" && !PLATFORM_API_KEY) {
+  console.error("❌ PLATFORM_API_KEY is required in production");
   process.exit(1);
 }
 
@@ -98,7 +118,9 @@ const ABI = [
   },
 ] as const;
 
-const ContractStatus = ["OPEN", "ACCEPTED", "SUBMITTED", "DONE", "CANCELLED"] as const;
+if (!PLATFORM_API_KEY) {
+  console.warn("⚠️  PLATFORM_API_KEY not set. Write endpoints are running in insecure mode.");
+}
 
 // ─── Viem Clients ───────────────────────────────────────────────────
 const account = privateKeyToAccount(PRIVATE_KEY);
@@ -116,22 +138,6 @@ const walletClient = createWalletClient({
 });
 
 // ─── In-Memory Task Cache ───────────────────────────────────────────
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  reward: string;
-  requester: string;
-  worker: string | null;
-  status: string;
-  result: string | null;
-  escrowTx: string | null;
-  acceptTx: string | null;
-  submitTx: string | null;
-  payoutTx: string | null;
-  createdAt: string;
-}
-
 const tasks = new Map<string, Task>();
 
 // ─── SSE ────────────────────────────────────────────────────────────
@@ -165,7 +171,7 @@ async function getTaskFromContract(taskId: string): Promise<Task | undefined> {
       reward: formatEther(reward),
       requester,
       worker: worker === "0x0000000000000000000000000000000000000000" ? null : worker,
-      status: ContractStatus[status] ?? "UNKNOWN",
+      status: TaskStatus[status] ?? "UNKNOWN",
       result: taskResult || null,
       escrowTx: cached?.escrowTx ?? null,
       acceptTx: cached?.acceptTx ?? null,
@@ -196,6 +202,33 @@ setInterval(refreshContractBalance, 10_000);
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const writeLimiter = rateLimit({
+  windowMs: 60_000,
+  max: WRITE_RATE_LIMIT,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many write requests, try again in a minute." },
+});
+
+function requireApiKey(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) {
+  if (!PLATFORM_API_KEY) {
+    next();
+    return;
+  }
+
+  const providedKey = req.header("x-api-key");
+  if (providedKey !== PLATFORM_API_KEY) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
+  next();
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // HEALTH & INFO
@@ -242,7 +275,7 @@ app.get("/skill.md", (_req, res) => {
  * Body: { title, description?, reward, requester }
  * Returns: Task with escrowTx (on-chain tx hash)
  */
-app.post("/tasks", async (req, res) => {
+app.post("/tasks", writeLimiter, requireApiKey, async (req, res) => {
   try {
     const { title, description, reward, requester } = req.body;
 
@@ -251,9 +284,21 @@ app.post("/tasks", async (req, res) => {
       return;
     }
 
+    if (typeof requester !== "string" || requester.length > 120) {
+      res.status(400).json({ error: "Invalid requester" });
+      return;
+    }
+
     const rewardNum = parseFloat(reward);
     if (isNaN(rewardNum) || rewardNum <= 0) {
       res.status(400).json({ error: "Invalid reward amount" });
+      return;
+    }
+
+    if (rewardNum > MAX_REWARD_MON) {
+      res.status(400).json({
+        error: `Reward exceeds maximum allowed (${MAX_REWARD_MON} MON)`,
+      });
       return;
     }
 
@@ -316,13 +361,18 @@ app.post("/tasks", async (req, res) => {
  * Body: { worker }
  * Returns: Task with acceptTx (on-chain tx hash)
  */
-app.post("/tasks/:id/accept", async (req, res) => {
+app.post("/tasks/:id/accept", writeLimiter, requireApiKey, async (req, res) => {
   try {
     const { worker } = req.body;
-    const taskId = req.params.id;
+    const taskId = String(req.params.id);
 
     if (!worker) {
       res.status(400).json({ error: "Missing: worker" });
+      return;
+    }
+
+    if (typeof worker !== "string" || worker.length > 120) {
+      res.status(400).json({ error: "Invalid worker" });
       return;
     }
 
@@ -380,13 +430,23 @@ app.post("/tasks/:id/accept", async (req, res) => {
  * Body: { worker, result }
  * Returns: Task with submitTx (on-chain tx hash)
  */
-app.post("/tasks/:id/submit", async (req, res) => {
+app.post("/tasks/:id/submit", writeLimiter, requireApiKey, async (req, res) => {
   try {
     const { worker, result } = req.body;
-    const taskId = req.params.id;
+    const taskId = String(req.params.id);
 
     if (!worker || !result) {
       res.status(400).json({ error: "Missing: worker, result" });
+      return;
+    }
+
+    if (typeof worker !== "string" || worker.length > 120) {
+      res.status(400).json({ error: "Invalid worker" });
+      return;
+    }
+
+    if (typeof result !== "string" || result.length > 4000) {
+      res.status(400).json({ error: "Invalid result" });
       return;
     }
 
