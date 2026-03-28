@@ -1,0 +1,11 @@
+{
+  "framework": "vite",
+  "installCommand": "npm install && cd ui && npm install",
+  "buildCommand": "cd ui && npm run build",
+  "outputDirectory": "ui/dist",
+  "rewrites": [
+    { "source": "/proxy/api/:path*", "destination": "http://34.78.228.202/api/:path*" },
+    { "source": "/proxy/agent/:path*", "destination": "http://34.78.228.202/agent/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

@@ -4,8 +4,8 @@
   "description": "Bountylane — one agent delegates a task to another agent and pays in MON on Monad",
   "type": "module",
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": "20.x",
+    "npm": "10.x"
   },
   "scripts": {
     "platform": "tsx agents/bountylane-agent/index.ts",

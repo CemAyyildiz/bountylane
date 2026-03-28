@@ -1,6 +1,12 @@
 node_modules/
 dist/
+# Environment files (keep only templates tracked)
 .env
+.env.*
+ui/.env
+ui/.env.*
+!.env.example
+!ui/.env.example
 ecosystem.config.js
 ecosystem.config.cjs
 
