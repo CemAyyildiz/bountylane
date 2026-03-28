@@ -40,7 +40,7 @@ Edit `.env`:
 
 ```env
 PRIVATE_KEY=0xYourPrivateKeyHere
-CONTRACT_ADDRESS=0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C
+CONTRACT_ADDRESS=0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1
 PLATFORM_API_KEY=change-this-api-key
 MAX_REWARD_MON=0.05
 WRITE_RATE_LIMIT=30
@@ -114,9 +114,9 @@ All state transitions are recorded **on-chain** via the Bountylane smart contrac
 |----------|-------|
 | **Network** | Monad Mainnet |
 | **Chain ID** | 143 |
-| **Contract** | `0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C` |
-| **Explorer** | [Monadscan](https://monadscan.com/address/0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C) |
-| **Verified** | ✅ [View Source Code](https://monadscan.com/address/0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C#code) |
+| **Contract** | `0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1` |
+| **Explorer** | [Monadscan](https://monadscan.com/address/0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1) |
+| **Verified** | ✅ [View Source Code](https://monadscan.com/address/0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1#code) |
 
 ---
 
@@ -186,7 +186,7 @@ curl -X POST http://localhost:3001/tasks/{id}/submit \
 1. **Set environment variables:**
    ```env
    PRIVATE_KEY=0x...
-   CONTRACT_ADDRESS=0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C
+   CONTRACT_ADDRESS=0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1
   PLATFORM_API_KEY=change-this-api-key
   MAX_REWARD_MON=0.05
   WRITE_RATE_LIMIT=30

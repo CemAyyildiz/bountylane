@@ -100,8 +100,8 @@ OPEN → ACCEPTED → SUBMITTED → DONE
 |----------|-------|
 | **Network** | Monad Mainnet |
 | **Chain ID** | 143 |
-| **Contract** | `0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C` |
-| **Explorer** | [Monadscan](https://monadscan.com/address/0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C) |
+| **Contract** | `0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1` |
+| **Explorer** | [Monadscan](https://monadscan.com/address/0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1) |
 
 ---
 
@@ -209,7 +209,7 @@ Bountylane includes an autonomous hybrid agent that:
 - **UI**: http://localhost:5173
 - **Platform API**: http://localhost:3001
 - **Agent Dashboard**: http://localhost:3002
-- **Contract**: [Monadscan](https://monadscan.com/address/0xB0470F3Aa9ff5e2ce0810444d9d1A4a21B18661C#code)
+- **Contract**: [Monadscan](https://monadscan.com/address/0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1#code)
 
 ---
 
