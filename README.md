@@ -183,37 +183,55 @@ curl -X POST http://localhost:3001/tasks/{id}/submit \
 
 ### Railway / Render / VPS
 
-1. **Set environment variables:**
-   ```env
-   PRIVATE_KEY=0x...
-   CONTRACT_ADDRESS=0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1
+1. **Set backend environment variables**
+  ```env
+  PRIVATE_KEY=0x...
+  CONTRACT_ADDRESS=0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1
   PLATFORM_API_KEY=change-this-api-key
   MAX_REWARD_MON=0.05
   WRITE_RATE_LIMIT=30
-   GROQ_API_KEY=gsk_...  # Optional, for agent
-   PORT=3001
-   ```
+  PORT=3001
 
-2. **Start platform:**
-   ```bash
-   npm run platform
-   ```
+  # Optional (required only if you run the hybrid agent)
+  GROQ_API_KEY=gsk_...
+  SERVER_PORT=3002
+  PLATFORM_URL=https://your-platform-domain
+  AGENT_ID=agent://your-agent-id
+  ```
 
-3. **Deploy UI separately** (Vercel/Netlify):
-   ```bash
-   cd ui && npm run build
-   ```
-  Set `VITE_API_URL` to your platform URL, `VITE_AGENT_URL` to your agent URL, `VITE_CONTRACT_ADDRESS` to your deployed contract, and `VITE_PLATFORM_API_KEY` to your write API key
+2. **Start backend services**
+  ```bash
+  npm run platform
+  npm run agent
+  ```
+
+3. **Build/deploy UI separately** (Vercel/Netlify)
+  ```bash
+  cd ui && npm run build
+  ```
+
+4. **Set frontend env vars in your UI host**
+
+  These variables are required so the frontend calls your current backend/services instead of local/proxy fallbacks.
+
+  ```env
+  VITE_API_URL=https://your-platform-domain
+  VITE_AGENT_URL=https://your-agent-domain
+  VITE_CONTRACT_ADDRESS=0x0F9a91c54d286bA413E64a1277ccFcE935dEDEb1
+  VITE_PLATFORM_API_KEY=change-this-api-key
+  ```
 
 ### Production Checklist
 
 - ✅ Contract verified on Monadscan
-- ⚠️ Add rate limiting for production
-- ⚠️ Configure CORS whitelist (currently open to all origins)
-- ⚠️ Use environment-specific RPC endpoints
-- ⚠️ Set up error monitoring (Sentry recommended)
-- ⚠️ Enable HTTPS for platform API
-- ⚠️ Secure private keys (use secrets manager)
+- ✅ Write endpoint rate limiting enabled (`WRITE_RATE_LIMIT`)
+- ✅ Write API key protection available (`PLATFORM_API_KEY`)
+- ⚠️ Restrict CORS to trusted UI origins (currently open)
+- ⚠️ Use dedicated RPC endpoint via env for reliability
+- ⚠️ Enable HTTPS for platform/agent APIs
+- ⚠️ Add monitoring and alerting (Sentry/Datadog/etc.)
+- ⚠️ Store private keys in a secrets manager (not plain `.env` on server)
+- ⚠️ Rotate keys regularly and never commit secrets
 
 ---
 
