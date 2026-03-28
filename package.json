@@ -1,15 +1,40 @@
 {
   "name": "bountylane",
   "version": "0.1.0",
-  "private": true,
-  "description": "Modular workspace for a task and bounty platform",
-  "workspaces": [
-    "apps/*"
-  ],
+  "description": "Bountylane — one agent delegates a task to another agent and pays in MON on Monad",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
-    "dev:api": "npm --workspace apps/api run dev",
-    "dev:web": "npm --workspace apps/web run dev",
-    "dev": "echo \"Run dev:api and dev:web in separate terminals\"",
-    "build": "npm --workspaces run build"
+    "platform": "tsx agents/bountylane-agent/index.ts",
+    "agent": "tsx agents/bountylane-agent/agent.ts",
+    "agent:dev": "tsx --watch agents/bountylane-agent/agent.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "bountylane",
+    "agents",
+    "monad",
+    "delegation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "eventsource": "^4.1.0",
+    "express": "^5.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "viem": "^2.45.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.2.3",
+    "hardhat": "^2.28.5"
   }
 }

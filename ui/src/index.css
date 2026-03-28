@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOUNTYLANE — BRUTALIST TERMINAL THEME
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme inline {
+  --font-mono: "JetBrains Mono", "SF Mono", "Consolas", monospace;
+  
+  /* Harsh black & white + Monad purple accent */
+  --c-black: #000000;
+  --c-dark: #0a0a0a;
+  --c-gray: #1a1a1a;
+  --c-gray-light: #2a2a2a;
+  --c-white: #ffffff;
+  --c-white-dim: #888888;
+  --c-accent: #836EF9; /* Monad purple */
+  --c-accent-dim: #6B5BD4;
+  --c-error: #ef4444;
+  --c-success: #22c55e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--c-black);
+  color: var(--c-white);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-black);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-black); }
+::-webkit-scrollbar-thumb { background: var(--c-gray-light); }
+::-webkit-scrollbar-thumb:hover { background: var(--c-white-dim); }
+
+/* ═══ TYPOGRAPHY ═══ */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.text-accent { color: var(--c-accent); }
+.text-dim { color: var(--c-white-dim); }
+.text-error { color: var(--c-error); }
+.text-success { color: var(--c-success); }
+
+/* ═══ BRUTAL CARD ═══ */
+.brutal-card {
+  background: var(--c-dark);
+  border: 2px solid var(--c-white);
+  position: relative;
+}
+
+.brutal-card::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid var(--c-accent);
+  z-index: -1;
+}
+
+/* ═══ BRUTAL BUTTON ═══ */
+.brutal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--c-accent);
+  color: var(--c-black);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--c-white);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 4px 4px 0 var(--c-white);
+}
+
+.brutal-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--c-white);
+}
+
+.brutal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--c-white);
+}
+
+.brutal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 4px 4px 0 var(--c-white);
+}
+
+.brutal-btn-outline {
+  background: transparent;
+  color: var(--c-white);
+}
+
+/* ═══ TERMINAL BOX ═══ */
+.terminal-box {
+  background: var(--c-dark);
+  border: 1px solid var(--c-gray-light);
+  font-family: var(--font-mono);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--c-gray);
+  border-bottom: 1px solid var(--c-gray-light);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ═══ STATUS ═══ */
+.status-online {
+  color: var(--c-accent);
+}
+
+.status-online::before {
+  content: "●";
+  margin-right: 6px;
+  animation: blink 1s infinite;
+}
+
+.status-offline {
+  color: var(--c-error);
+}
+
+.status-offline::before {
+  content: "○";
+  margin-right: 6px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ═══ GRID LINES ═══ */
+.grid-bg {
+  background-image: 
+    linear-gradient(var(--c-gray-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-gray-light) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+}
+
+/* ═══ MARQUEE ═══ */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ═══ CURSOR ═══ */
+.cursor::after {
+  content: "█";
+  animation: cursor-blink 1s step-end infinite;
+  color: var(--c-accent);
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ═══ BADGE ═══ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid currentColor;
+}
+
+.badge-accent {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.badge-white {
+  color: var(--c-white);
+  border-color: var(--c-white);
+}

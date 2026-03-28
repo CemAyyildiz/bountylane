@@ -1,5 +1,25 @@
-node_modules
+node_modules/
+dist/
 .env
+ecosystem.config.js
+ecosystem.config.cjs
+
+# Build outputs
+*.js
+*.d.ts
+*.js.map
+!tsconfig.json
+!package.json
+!hardhat.config.cjs
+!scripts/*.cjs
+
+# Hardhat
+artifacts/
+cache/
+
+# Logs
+server.log
+*.log
+
+# OS
 .DS_Store
-dist
-coverage
