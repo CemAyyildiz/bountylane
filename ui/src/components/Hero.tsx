@@ -17,8 +17,8 @@ export function Hero() {
           {/* Left */}
           <div>
             <h1 className="text-5xl md:text-7xl font-bold leading-none mb-6">
-              TASK<br />
-              <span className="text-accent">FLOW</span>
+              BOUNTY<br />
+              <span className="text-accent">LANE</span>
             </h1>
             
             <p className="text-lg text-dim mb-8 max-w-md">
